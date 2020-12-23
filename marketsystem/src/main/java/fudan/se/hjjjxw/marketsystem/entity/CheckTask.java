@@ -2,9 +2,7 @@ package fudan.se.hjjjxw.marketsystem.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -20,6 +18,10 @@ public class CheckTask implements Serializable {
 
     private boolean isFinished;
 
+    @ManyToOne
+    @JoinColumn(name = "market_id")
+    private Market market;
+
     @OneToMany
     private Set<CheckReport> checkReportSet;
 
@@ -31,6 +33,10 @@ public class CheckTask implements Serializable {
         this.superTask = superTask;
         this.isFinished = isFinished;
         this.checkReportSet = checkReportSet;
+    }
+
+    public CheckTask(Market market) {
+        this.market = market;
     }
 
     public Integer getId() {
@@ -65,9 +71,18 @@ public class CheckTask implements Serializable {
         this.checkReportSet = checkReportSet;
     }
 
+    public void addCheckReport(CheckReport checkReport){
+        this.checkReportSet.add(checkReport);
+    }
+
     // ------------  功能函数  ----------------
-    public List<ProductCategory> getUnfinishedProductCategories(){
-        return new ArrayList<>();
+    public Set<ProductCategory> getUnfinishedProductCategories(){
+        Set<ProductCategory> unfinishedCategories = this.superTask.getProductCategorySet();
+        for(CheckReport report: this.checkReportSet){
+            // 有报告说明已完成
+            unfinishedCategories.remove(report.getProductCategory());
+        }
+        return unfinishedCategories;
     }
 
     public void updateCheckReport(CheckReport checkReport){

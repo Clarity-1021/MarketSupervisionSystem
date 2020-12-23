@@ -13,7 +13,8 @@ public class SuperTask implements Serializable {
 
     private String description;
 
-    // TODO ignore
+    @ManyToOne
+    @JoinColumn(name = "expert_id")
     private Expert expert;
 
     @Transient
@@ -37,6 +38,14 @@ public class SuperTask implements Serializable {
         this.checkTaskSet = checkTaskSet;
         this.deadLine = deadLine;
         this.finishDate = finishDate;
+    }
+
+
+    public SuperTask(String description, Set<ProductCategory> productCategorySet, Set<CheckTask> checkTaskSet, Date deadLine) {
+        this.description = description;
+        this.productCategorySet = productCategorySet;
+        this.checkTaskSet = checkTaskSet;
+        this.deadLine = deadLine;
     }
 
     public Integer getId() {

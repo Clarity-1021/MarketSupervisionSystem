@@ -1,10 +1,8 @@
 package fudan.se.hjjjxw.marketsystem.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Set;
 
 @Entity
 public class ProductCategory implements Serializable {
@@ -15,8 +13,15 @@ public class ProductCategory implements Serializable {
 
     String name;
 
+    @OneToMany
+    private Set<CheckReport> checkReport;
+
 
     public ProductCategory() {
+    }
+
+    public ProductCategory(String name) {
+        this.name = name;
     }
 
     public ProductCategory(Integer id, String name) {

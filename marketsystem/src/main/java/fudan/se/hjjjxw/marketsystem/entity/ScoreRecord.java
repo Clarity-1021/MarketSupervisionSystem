@@ -11,17 +11,20 @@ public class ScoreRecord implements Serializable {
     private Integer id;
 
     @ManyToOne
-    private Market market;
+    private SuperTask superTask;
 
-    int score;
+    private int score;
+
+    private String description;
 
     public ScoreRecord() {
     }
 
-    public ScoreRecord(Integer id, Market market, int score) {
+    public ScoreRecord(Integer id, SuperTask superTask, int score, String description) {
         this.id = id;
-        this.market = market;
+        this.superTask = superTask;
         this.score = score;
+        this.description = description;
     }
 
     public Integer getId() {
@@ -32,13 +35,6 @@ public class ScoreRecord implements Serializable {
         this.id = id;
     }
 
-    public Market getMarket() {
-        return market;
-    }
-
-    public void setMarket(Market market) {
-        this.market = market;
-    }
 
     public int getScore() {
         return score;
@@ -47,4 +43,21 @@ public class ScoreRecord implements Serializable {
     public void setScore(int score) {
         this.score = score;
     }
+
+    public SuperTask getSuperTask() {
+        return superTask;
+    }
+
+    public void setSuperTask(SuperTask superTask) {
+        this.superTask = superTask;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
 }

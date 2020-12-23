@@ -2,10 +2,11 @@ package fudan.se.hjjjxw.marketsystem.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
 @Entity
-public class Market implements Serializable {
+public class Market implements Serializable, ICheck {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -48,5 +49,26 @@ public class Market implements Serializable {
 
     public void setScoreRecordList(Set<ScoreRecord> scoreRecordList) {
         this.scoreRecordList = scoreRecordList;
+    }
+
+
+    // ------------  功能函数  ----------------
+    public void calculateTotalScore(){
+
+
+    }
+
+    public void getScoreRecord(){
+
+    }
+
+    @Override
+    public void checkProductCategory(ProductCategory productCategory, CheckTask checkTask) {
+
+    }
+
+    @Override
+    public List<CheckTask> checkUnfinishedCheckTask() {
+        return null;
     }
 }

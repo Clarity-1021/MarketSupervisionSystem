@@ -1,12 +1,19 @@
 package fudan.se.hjjjxw.marketsystem.entity;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
+@Entity
 public class Expert implements Serializable, ICheck {
+
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    private Integer id;
 
     private String name;
 
+    @Transient
     private List<SuperTask> superTaskList;
 
     public Expert(){}

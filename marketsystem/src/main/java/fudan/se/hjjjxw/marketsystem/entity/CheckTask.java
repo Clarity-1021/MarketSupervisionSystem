@@ -14,7 +14,8 @@ public class CheckTask implements Serializable {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "supertask_id")
     private SuperTask superTask;
 
     private boolean isFinished;

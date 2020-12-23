@@ -1,9 +1,6 @@
 package fudan.se.hjjjxw.marketsystem.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -17,6 +14,10 @@ public class CheckReport implements Serializable {
     private int unqualifiedCnt;
 
     private Date checkDate;
+
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "task_id")
+    private CheckTask checkTask;
 
     public CheckReport() {
     }

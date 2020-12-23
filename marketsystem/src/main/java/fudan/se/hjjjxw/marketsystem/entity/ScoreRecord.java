@@ -10,7 +10,8 @@ public class ScoreRecord implements Serializable {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "task_id")
     private SuperTask superTask;
 
     private int score;

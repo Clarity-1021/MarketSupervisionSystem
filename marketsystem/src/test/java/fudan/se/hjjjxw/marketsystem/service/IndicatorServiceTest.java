@@ -33,7 +33,6 @@ class IndicatorServiceTest {
      */
     @Test
     void initTaskWithoutExpert(){
-
     }
 
     /**

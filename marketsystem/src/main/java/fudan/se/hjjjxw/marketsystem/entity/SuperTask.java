@@ -16,8 +16,8 @@ public class SuperTask implements Serializable {
     // TODO ignore
     private Expert expert;
 
-    @OneToOne
-    private ProductCategory productCategory;
+    @Transient
+    private Set<ProductCategory> productCategorySet;
 
     @OneToMany
     private Set<CheckTask> checkTaskSet;
@@ -29,11 +29,11 @@ public class SuperTask implements Serializable {
     public SuperTask() {
     }
 
-    public SuperTask(Integer id, String description, Expert expert, ProductCategory productCategory, Set<CheckTask> checkTaskSet, Date deadLine, Date finishDate) {
+    public SuperTask(Integer id, String description, Expert expert, Set<ProductCategory> productCategorySet, Set<CheckTask> checkTaskSet, Date deadLine, Date finishDate) {
         this.id = id;
         this.description = description;
         this.expert = expert;
-        this.productCategory = productCategory;
+        this.productCategorySet = productCategorySet;
         this.checkTaskSet = checkTaskSet;
         this.deadLine = deadLine;
         this.finishDate = finishDate;
@@ -55,12 +55,12 @@ public class SuperTask implements Serializable {
         this.expert = expert;
     }
 
-    public ProductCategory getProductCategory() {
-        return productCategory;
+    public Set<ProductCategory> getProductCategorySet() {
+        return productCategorySet;
     }
 
-    public void setProductCategory(ProductCategory productCategory) {
-        this.productCategory = productCategory;
+    public void setProductCategorySet(Set<ProductCategory> productCategorySet) {
+        this.productCategorySet = productCategorySet;
     }
 
     public Set<CheckTask> getCheckTaskSet() {

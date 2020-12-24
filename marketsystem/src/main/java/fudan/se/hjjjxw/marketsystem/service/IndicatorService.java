@@ -2,14 +2,16 @@ package fudan.se.hjjjxw.marketsystem.service;
 
 import fudan.se.hjjjxw.marketsystem.entity.*;
 import fudan.se.hjjjxw.marketsystem.repository.CheckTaskRepository;
+import fudan.se.hjjjxw.marketsystem.repository.MarketRepository;
 import fudan.se.hjjjxw.marketsystem.repository.SuperTaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
+@Service
+@Transactional
 public class IndicatorService {
 
     @Autowired
@@ -18,6 +20,8 @@ public class IndicatorService {
     @Autowired
     CheckTaskRepository checkTaskRepository;
 
+    @Autowired
+    MarketRepository marketRepository;
 
 
 
@@ -32,43 +36,46 @@ public class IndicatorService {
     /**
      * 发起监管任务（无专家）
      * @param description
-     * @param marketList
-     * @param categoryList
+     * @param marketSet
+     * @param productCategorySet
      */
-    public void lauchCheck(String description, Set<Market> marketList, Set<ProductCategory> categoryList, Date deadline){
-//        SuperTask superTask = new SuperTask(description,marketList, categoryList,deadline);
+    public SuperTask launchCheck(String description, Set<Market> marketSet, Set<ProductCategory> productCategorySet, Date deadline){
         Set<CheckTask> checkTasks = new HashSet<>();
-        for(Market market: marketList){
-            CheckTask checkTask = new CheckTask(market);
+        SuperTask superTask = new SuperTask(description, productCategorySet, deadline);
+        for(Market market: marketSet){
+            CheckTask checkTask = new CheckTask(market, superTask);
             checkTasks.add(checkTask);
-            checkTaskRepository.save(checkTask);
+            // 将 checkTask 加入 market 的 Task列表
+            market.addTask(checkTask);
         }
-        SuperTask superTask = new SuperTask(description, categoryList, checkTasks, deadline);
-        superTaskRepository.save(superTask);
+        superTask.setCheckTaskSet(checkTasks);
+        return superTask;
     }
 
     /**
      * 发起监管任务(专家任务）
      * @param description
-     * @param marketList
-     * @param categoryList
+     * @param marketSet
+     * @param productCategorySet
      * @param deadline
      * @param expert
      */
-    public void lauchCheck(String description, Set<Market> marketList, Set<ProductCategory> categoryList, Date deadline, Expert expert){
+    public SuperTask launchCheck(String description, Set<Market> marketSet, Set<ProductCategory> productCategorySet, Date deadline, Expert expert){
+
         Set<CheckTask> checkTasks = new HashSet<>();
-        for(Market market: marketList){
-            CheckTask checkTask = new CheckTask(market);
+        SuperTask superTask = new SuperTask(description, productCategorySet, deadline);
+        for(Market market: marketSet){
+            CheckTask checkTask = new CheckTask(market, superTask);
             checkTasks.add(checkTask);
-            checkTaskRepository.save(checkTask);
         }
-        SuperTask superTask = new SuperTask(description, categoryList, checkTasks, deadline);
-        superTask.setExpert(expert);
-        superTaskRepository.save(superTask);
+        superTask.setCheckTaskSet(checkTasks);
+        // 将 superTask 加入专家的 Task 列表
+        expert.addSuperTask(superTask);
+        return superTask;
     }
 
     /**
-     * 管局查看某个农贸产品类别在某个时间范围内的总的不合格数（时间以抽检日期为准）
+     * 监管局查看某个农贸产品类别在某个时间范围内的总的不合格数（时间以抽检日期为准）
      * @param startDate
      * @param endDate
      * @param productCategory
@@ -77,7 +84,26 @@ public class IndicatorService {
         return 0;
     }
 
+    /**
+     * 监管局查看某次监管任务，还未完成抽检的农贸市场
+     */
+    public Set<Market> getUnfinishedMarkets(SuperTask superTask){
+        return new HashSet<>();
+    }
 
+    /**
+     * 监管局查看农贸市场得分记录
+     * @param market
+     * @return
+     */
+    public List<ScoreRecord> getMarketScoreRecords(Market market){
+        return new ArrayList<>();
+    }
+
+
+    /**
+     * 系统更新得分记录 （？
+     */
     public void update(){
 
     }

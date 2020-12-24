@@ -1,13 +1,15 @@
 package fudan.se.hjjjxw.marketsystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.DynamicInsert;
+
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
+@JsonIgnoreProperties({"handler","hibernateLazyInitializer"})
+@DynamicInsert(true)
 public class Market implements Serializable, ICheck {
 
     @Id
@@ -16,11 +18,11 @@ public class Market implements Serializable, ICheck {
 
     private String name;
 
-    @OneToMany
-    private Set<ScoreRecord> scoreRecordList;
+    @Transient //@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "market")//(fetch = FetchType.EAGER)
+    private Set<ScoreRecord> scoreRecordList = new HashSet<>();
 
-    @OneToMany
-    private Set<CheckTask> checkTaskSet;
+    @Transient //@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE,mappedBy = "market")
+    private Set<CheckTask> checkTaskSet = new HashSet<>();
 
 
     public Market() {
@@ -29,6 +31,7 @@ public class Market implements Serializable, ICheck {
     public Market(String name){
         this.name = name;
     }
+
     public Market(Integer id, String name, Set<ScoreRecord> scoreRecordList) {
         this.id = id;
         this.name = name;
@@ -78,9 +81,9 @@ public class Market implements Serializable, ICheck {
      */
     @Override
     public void checkProductCategory(ProductCategory productCategory, CheckTask checkTask, int unqualifiedCount, Date checkDate) {
-        CheckReport checkReport = new CheckReport(unqualifiedCount, checkDate, productCategory);
+        CheckReport checkReport = new CheckReport(unqualifiedCount, checkDate, productCategory, checkTask);
         checkTask.addCheckReport(checkReport);
-        if(checkUnfinishedCheckTask().isEmpty())
+        if(checkTask.getUnfinishedProductCategories().isEmpty())
             checkTask.setFinished(true);
     }
 
@@ -89,12 +92,17 @@ public class Market implements Serializable, ICheck {
      * @return
      */
     @Override
-    public List<CheckTask> checkUnfinishedCheckTask() {
+    public List<CheckTask> getUnfinishedCheckTask() {
         List<CheckTask> unfinishedList = new ArrayList<>();
         for(CheckTask task: this.checkTaskSet){
-            if(!task.isFinished())
+            if(!task.isFinished()) {
                 unfinishedList.add(task);
+            }
         }
         return unfinishedList;
+    }
+
+    public void addTask(CheckTask checkTask) {
+        this.checkTaskSet.add(checkTask);
     }
 }

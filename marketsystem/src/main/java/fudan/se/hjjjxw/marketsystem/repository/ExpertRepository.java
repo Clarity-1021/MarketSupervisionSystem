@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ExpertRepository extends CrudRepository<Expert, Integer> {
 
+    Expert findByName(String name);
 }

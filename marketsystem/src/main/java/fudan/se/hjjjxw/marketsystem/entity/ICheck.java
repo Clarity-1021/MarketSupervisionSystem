@@ -7,5 +7,5 @@ public interface ICheck {
 
     void checkProductCategory(ProductCategory productCategory, CheckTask checkTask, int unqualifiedCount, Date checkDate);
 
-    List<CheckTask> checkUnfinishedCheckTask();
+    List<CheckTask> getUnfinishedCheckTask();
 }

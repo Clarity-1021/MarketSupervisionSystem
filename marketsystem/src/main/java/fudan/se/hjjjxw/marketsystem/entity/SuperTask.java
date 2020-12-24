@@ -1,11 +1,17 @@
 package fudan.se.hjjjxw.marketsystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.DynamicInsert;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@JsonIgnoreProperties({"handler","hibernateLazyInitializer"})
+@DynamicInsert(true)
 public class SuperTask implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -13,15 +19,18 @@ public class SuperTask implements Serializable {
 
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "expert_id")
+//    @Transient
+    @Transient //@ManyToOne(optional=true)
+    //@JoinColumn(name = "expert_id")
     private Expert expert;
 
-    @Transient
-    private Set<ProductCategory> productCategorySet;
+//    @Transient
+    @Transient //@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<ProductCategory> productCategorySet = new HashSet<>();
 
-    @OneToMany
-    private Set<CheckTask> checkTaskSet;
+//    @Transient
+    @Transient //@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "superTask")
+    private Set<CheckTask> checkTaskSet = new HashSet<>();
 
     private Date deadLine;
 
@@ -46,6 +55,12 @@ public class SuperTask implements Serializable {
         this.productCategorySet = productCategorySet;
         this.checkTaskSet = checkTaskSet;
         this.deadLine = deadLine;
+    }
+
+    public SuperTask(String description, Set<ProductCategory> categoryList, Date deadline) {
+        this.description = description;
+        this.productCategorySet = categoryList;
+        this.deadLine = deadline;
     }
 
     public Integer getId() {
@@ -103,6 +118,7 @@ public class SuperTask implements Serializable {
     public void setFinishDate(Date finishDate) {
         this.finishDate = finishDate;
     }
+
 
 
 }

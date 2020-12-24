@@ -1,10 +1,15 @@
 package fudan.se.hjjjxw.marketsystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.DynamicInsert;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
 @Entity
+@JsonIgnoreProperties({"handler","hibernateLazyInitializer"})
+@DynamicInsert(true)
 public class CheckReport implements Serializable {
 
     @Id
@@ -15,12 +20,12 @@ public class CheckReport implements Serializable {
 
     private Date checkDate;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id")
+    @Transient //@ManyToOne
+    //@JoinColumn(name = "productcategory_id")
     private ProductCategory productCategory;
 
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "task_id")
+    @Transient //@ManyToOne
+    //@JoinColumn(name = "checktask_id")
     private CheckTask checkTask;
 
     public CheckReport() {
@@ -35,6 +40,13 @@ public class CheckReport implements Serializable {
     public CheckReport(Integer id, int unqualifiedCnt, Date checkDate, ProductCategory productCategory, CheckTask checkTask) {
         this.id = id;
         this.unqualifiedCnt = unqualifiedCnt;
+        this.checkDate = checkDate;
+        this.productCategory = productCategory;
+        this.checkTask = checkTask;
+    }
+
+    public CheckReport(int unqualifiedCount, Date checkDate, ProductCategory productCategory, CheckTask checkTask) {
+        this.unqualifiedCnt = unqualifiedCount;
         this.checkDate = checkDate;
         this.productCategory = productCategory;
         this.checkTask = checkTask;

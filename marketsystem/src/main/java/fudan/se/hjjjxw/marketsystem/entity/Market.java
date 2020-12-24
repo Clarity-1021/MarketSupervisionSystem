@@ -5,7 +5,9 @@ import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @JsonIgnoreProperties({"handler","hibernateLazyInitializer"})
@@ -19,11 +21,14 @@ public class Market implements Serializable, ICheck {
     private String name;
 
     @Transient //@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "market")//(fetch = FetchType.EAGER)
-    private Set<ScoreRecord> scoreRecordList = new HashSet<>();
+    private List<ScoreRecord> scoreRecordList = new ArrayList<>();
 
     @Transient //@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE,mappedBy = "market")
-    private Set<CheckTask> checkTaskSet = new HashSet<>();
+    private List<CheckTask> checkTaskSet = new ArrayList<>();
 
+    public List<CheckTask> getCheckTaskSet() {
+        return checkTaskSet;
+    }
 
     public Market() {
     }
@@ -32,7 +37,7 @@ public class Market implements Serializable, ICheck {
         this.name = name;
     }
 
-    public Market(Integer id, String name, Set<ScoreRecord> scoreRecordList) {
+    public Market(Integer id, String name, List<ScoreRecord> scoreRecordList) {
         this.id = id;
         this.name = name;
         this.scoreRecordList = scoreRecordList;
@@ -54,11 +59,11 @@ public class Market implements Serializable, ICheck {
         this.name = name;
     }
 
-    public Set<ScoreRecord> getScoreRecordList() {
+    public List<ScoreRecord> getScoreRecordList() {
         return scoreRecordList;
     }
 
-    public void setScoreRecordList(Set<ScoreRecord> scoreRecordList) {
+    public void setScoreRecordList(List<ScoreRecord> scoreRecordList) {
         this.scoreRecordList = scoreRecordList;
     }
 
@@ -74,6 +79,10 @@ public class Market implements Serializable, ICheck {
 
     }
 
+    public boolean equals(Market market) {
+        return name.equals(market.getName());
+    }
+
     /**
      * 抽检产品分类，并上报抽检结果
      * @param productCategory
@@ -83,8 +92,18 @@ public class Market implements Serializable, ICheck {
     public void checkProductCategory(ProductCategory productCategory, CheckTask checkTask, int unqualifiedCount, Date checkDate) {
         CheckReport checkReport = new CheckReport(unqualifiedCount, checkDate, productCategory, checkTask);
         checkTask.addCheckReport(checkReport);
-        if(checkTask.getUnfinishedProductCategories().isEmpty())
+        if(checkTask.getUnfinishedProductCategories().isEmpty()) {
             checkTask.setFinished(true);
+            List<CheckReport> checkReports = checkTask.getCheckReportSet();
+            Date finishDate = checkReport.getCheckDate();
+            for (CheckReport report : checkReports) {
+                if (finishDate.compareTo(report.getCheckDate()) < 0) {
+                    finishDate = report.getCheckDate();
+                }
+            }
+            checkTask.setFinishDate(finishDate);
+        }
+
     }
 
     /**
@@ -100,6 +119,36 @@ public class Market implements Serializable, ICheck {
             }
         }
         return unfinishedList;
+    }
+
+    @Override
+    public List<CheckTask> getFinishedCheckTask() {
+        List<CheckTask> finishedList = new ArrayList<>();
+        for(CheckTask task: this.checkTaskSet){
+            if(task.isFinished()) {
+                finishedList.add(task);
+            }
+        }
+        return finishedList;
+    }
+
+    @Override
+    public void addScoreRecord(ScoreRecord scoreRecord) {
+        this.scoreRecordList.add(scoreRecord);
+    }
+
+    @Override
+    public int getTotalScore() {
+        int total = 0;
+        for (ScoreRecord scoreRecord : scoreRecordList) {
+            total += scoreRecord.getScore();
+        }
+        return total;
+    }
+
+    @Override
+    public List<CheckTask> getAllCheckTask() {
+        return checkTaskSet;
     }
 
     public void addTask(CheckTask checkTask) {

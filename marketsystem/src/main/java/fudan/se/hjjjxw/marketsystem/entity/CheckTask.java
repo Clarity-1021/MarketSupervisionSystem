@@ -5,9 +5,7 @@ import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @JsonIgnoreProperties({"handler","hibernateLazyInitializer"})
@@ -24,6 +22,16 @@ public class CheckTask implements Serializable {
 
     private boolean isFinished;
 
+    private Date finishDate;
+
+    public Date getFinishDate() {
+        return finishDate;
+    }
+
+    public void setFinishDate(Date finishDate) {
+        this.finishDate = finishDate;
+    }
+
     private String description;
 
 
@@ -32,7 +40,7 @@ public class CheckTask implements Serializable {
     private Market market;
 
     @Transient //@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "checkTask")
-    private Set<CheckReport> checkReportSet = new HashSet<>();
+    private List<CheckReport> checkReportSet = new ArrayList<>();
 
     public CheckTask() {
     }
@@ -43,19 +51,32 @@ public class CheckTask implements Serializable {
         this.description = superTask.getDescription() + "-" + market.getName();
     }
 
-    public CheckTask(Integer id, SuperTask superTask, boolean isFinished, Set<CheckReport> checkReportSet) {
+    public CheckTask(Integer id, SuperTask superTask, boolean isFinished, List<CheckReport> checkReportSet) {
         this.id = id;
         this.superTask = superTask;
         this.isFinished = isFinished;
         this.checkReportSet = checkReportSet;
     }
 
-    public CheckTask(Integer id, SuperTask superTask, boolean isFinished, Market market, Set<CheckReport> checkReportSet) {
+    public CheckTask(Integer id, SuperTask superTask, boolean isFinished, Market market, List<CheckReport> checkReportSet) {
         this.id = id;
         this.superTask = superTask;
         this.isFinished = isFinished;
         this.market = market;
         this.checkReportSet = checkReportSet;
+    }
+
+    public int getUnqualifiedCountByCategory(ProductCategory category, Date startDate, Date endDate) {
+        int total = 0;
+        for (CheckReport checkReport : checkReportSet) {
+            if (checkReport.getProductCategory().equals(category)) {
+                Date checkDate = checkReport.getCheckDate();
+                if (checkDate.compareTo(startDate)>=0 && checkDate.compareTo(endDate)<=0) {
+                    total += checkReport.getUnqualifiedCnt();
+                }
+            }
+        }
+        return total;
     }
 
     public CheckTask(Market market) {
@@ -86,11 +107,11 @@ public class CheckTask implements Serializable {
         isFinished = finished;
     }
 
-    public Set<CheckReport> getCheckReportSet() {
+    public List<CheckReport> getCheckReportSet() {
         return checkReportSet;
     }
 
-    public void setCheckReportSet(Set<CheckReport> checkReportSet) {
+    public void setCheckReportSet(List<CheckReport> checkReportSet) {
         this.checkReportSet = checkReportSet;
     }
 

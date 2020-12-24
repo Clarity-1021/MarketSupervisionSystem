@@ -50,6 +50,10 @@ public class ProductCategory implements Serializable {
         this.checkReport = checkReport;
     }
 
+    public boolean equals(ProductCategory productCategory) {
+        return name.equals(productCategory.getName());
+    }
+
     public Integer getId() {
         return id;
     }

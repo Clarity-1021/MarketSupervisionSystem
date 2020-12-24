@@ -40,7 +40,7 @@ public class IndicatorService {
      * @param productCategorySet
      */
     public SuperTask launchCheck(String description, Set<Market> marketSet, Set<ProductCategory> productCategorySet, Date deadline){
-        Set<CheckTask> checkTasks = new HashSet<>();
+        List<CheckTask> checkTasks = new ArrayList<>();
         SuperTask superTask = new SuperTask(description, productCategorySet, deadline);
         for(Market market: marketSet){
             CheckTask checkTask = new CheckTask(market, superTask);
@@ -62,13 +62,14 @@ public class IndicatorService {
      */
     public SuperTask launchCheck(String description, Set<Market> marketSet, Set<ProductCategory> productCategorySet, Date deadline, Expert expert){
 
-        Set<CheckTask> checkTasks = new HashSet<>();
+        List<CheckTask> checkTasks = new ArrayList<>();
         SuperTask superTask = new SuperTask(description, productCategorySet, deadline);
         for(Market market: marketSet){
             CheckTask checkTask = new CheckTask(market, superTask);
             checkTasks.add(checkTask);
         }
         superTask.setCheckTaskSet(checkTasks);
+        superTask.setExpert(expert);
         // 将 superTask 加入专家的 Task 列表
         expert.addSuperTask(superTask);
         return superTask;

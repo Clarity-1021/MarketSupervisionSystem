@@ -5,6 +5,8 @@ import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 @Entity
 @JsonIgnoreProperties({"handler","hibernateLazyInitializer"})
@@ -30,19 +32,17 @@ public class ScoreRecord implements Serializable {
     public ScoreRecord() {
     }
 
-    public ScoreRecord(Integer id, SuperTask superTask, Market market, int score, String description) {
-        this.id = id;
+    public ScoreRecord(SuperTask superTask, int score, String description) {
         this.superTask = superTask;
-        this.market = market;
         this.score = score;
         this.description = description;
     }
 
-    public ScoreRecord(Integer id, SuperTask superTask, int score, String description) {
-        this.id = id;
-        this.superTask = superTask;
-        this.score = score;
-        this.description = description;
+    public String getScoreReason() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");// 日期格式
+        return "[" + this.superTask.getDescription() + " " +
+                dateFormat.format(superTask.getDeadLine()) + "]" +
+                "[" + score + "]：" + description;
     }
 
     public Integer getId() {

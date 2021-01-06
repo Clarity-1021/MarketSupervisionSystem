@@ -4,9 +4,11 @@ import fudan.se.hjjjxw.marketsystem.entity.*;
 import fudan.se.hjjjxw.marketsystem.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.PostConstruct;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,6 +40,10 @@ public class CrudService {
     private SuperTaskRepository superTaskRepository;
 
     @RequestMapping(value = "/test_save")
+    public void init() {
+        initDB();
+    }
+
     public void saveMarket(Market market) {
         marketRepository.save(market);
 //        Market market1 = new Market(market);
@@ -50,8 +56,10 @@ public class CrudService {
         return marketRepository.findByName(name);
     }
 
+    @Transactional
     public void saveProductCategory(ProductCategory productCategory) {
         productCategoryRepository.save(productCategory);
+//        productCategoryRepository.flush();
     }
 
     public ProductCategory getProductCategory(String name) {
@@ -67,11 +75,13 @@ public class CrudService {
         return expertRepository.findByName(name);
     }
 
-
+    /**
+     * 数据库自动初始化
+     */
+    @PostConstruct
     public void initDB(){
-        //
-//        System.out.println("初始化数据");
-//
+        System.out.println("初始化数据");
+
 //        // ----  创建商品类别  --------
         List<String> nameList = new ArrayList<>();
         nameList.add("水果类");
@@ -80,9 +90,14 @@ public class CrudService {
         nameList.add("水产品类");
 //
         for (String name : nameList) {
-            ProductCategory category = new ProductCategory(name);
-            saveProductCategory(category);
+            if(getProductCategory(name) == null) {
+                ProductCategory category = new ProductCategory(name);
+                saveProductCategory(category);
+            }
         }
+        ProductCategory test = getProductCategory("水果类");
+        System.out.println("test save:" + test);
+
 
 //        //  ------ 创建专家  ---------
         List<String> expertNames = new ArrayList<>();
@@ -90,8 +105,10 @@ public class CrudService {
         expertNames.add("专家2");
         expertNames.add("专家3");
         for (String name : expertNames) {
-            Expert expert = new Expert(name);
-            saveExpert(expert);
+            if(getExpert(name) == null) {
+                Expert expert = new Expert(name);
+                saveExpert(expert);
+            }
         }
 //
 //        //  ------ 创建农贸市场  --------
@@ -100,10 +117,13 @@ public class CrudService {
         marketNames.add("市场2");
         marketNames.add("市场3");
         for (String name : marketNames) {
-            Market market = new Market(name);
-            saveMarket(market);
+            if(getMarket(name) == null) {
+                Market market = new Market(name);
+                saveMarket(market);
+            }
         }
     }
+
 
     @RequestMapping(value = "/test")
     public void Test() {

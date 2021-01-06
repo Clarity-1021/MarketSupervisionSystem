@@ -48,17 +48,6 @@ public class Expert implements Serializable, ICheck {
         this.scoreRecordList = scoreRecordList;
     }
 
-    // ------------  功能函数  ----------------
-    public void calculateTotalScore(){
-
-
-    }
-
-    public void getScoreRecord(){
-
-    }
-
-
 
     /**
      * 抽检产品分类，并上报抽检结果

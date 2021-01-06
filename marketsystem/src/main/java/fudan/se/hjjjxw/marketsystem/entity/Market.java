@@ -67,18 +67,6 @@ public class Market implements Serializable, ICheck {
         this.scoreRecordList = scoreRecordList;
     }
 
-
-
-    // ------------  功能函数  ----------------
-    public void calculateTotalScore(){
-
-
-    }
-
-    public void getScoreRecord(){
-
-    }
-
     public boolean equals(Market market) {
         return name.equals(market.getName());
     }

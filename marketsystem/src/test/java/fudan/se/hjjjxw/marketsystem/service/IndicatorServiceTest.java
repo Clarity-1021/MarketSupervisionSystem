@@ -53,45 +53,6 @@ class IndicatorServiceTest {
 
 
     /**
-     * 数据库 专家、产品分类、市场 记录初始化
-     */
-    public void initDB(){
-        System.out.println("初始化数据");
-
-//        // ----  创建商品类别  --------
-        List<String> nameList = new ArrayList<>();
-        nameList.add("水果类");
-        nameList.add("畜禽肉类");
-        nameList.add("蔬菜类");
-        nameList.add("水产品类");
-//
-        for (String name : nameList) {
-            ProductCategory category = new ProductCategory(name);
-            crudService.saveProductCategory(category);
-        }
-
-//        //  ------ 创建专家  ---------
-        List<String> expertNames = new ArrayList<>();
-        expertNames.add("专家1");
-        expertNames.add("专家2");
-        expertNames.add("专家3");
-        for (String name : expertNames) {
-            Expert expert = new Expert(name);
-            crudService.saveExpert(expert);
-        }
-//
-//        //  ------ 创建农贸市场  --------
-        List<String> marketNames = new ArrayList<>();
-        marketNames.add("市场1");
-        marketNames.add("市场2");
-        marketNames.add("市场3");
-        for (String name : marketNames) {
-            Market market = new Market(name);
-            crudService.saveMarket(market);
-        }
-    }
-
-    /**
      * 场景1. 监管局给一组农贸市场发起监管任务，农贸市场查看待完成任务，并完成抽检任务。
      */
     @Test

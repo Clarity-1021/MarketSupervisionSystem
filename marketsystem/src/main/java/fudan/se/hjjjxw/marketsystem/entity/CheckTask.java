@@ -66,18 +66,7 @@ public class CheckTask implements Serializable {
         this.checkReportSet = checkReportSet;
     }
 
-    public int getUnqualifiedCountByCategory(ProductCategory category, Date startDate, Date endDate) {
-        int total = 0;
-        for (CheckReport checkReport : checkReportSet) {
-            if (checkReport.getProductCategory().equals(category)) {
-                Date checkDate = checkReport.getCheckDate();
-                if (checkDate.compareTo(startDate)>=0 && checkDate.compareTo(endDate)<=0) {
-                    total += checkReport.getUnqualifiedCnt();
-                }
-            }
-        }
-        return total;
-    }
+
 
     public CheckTask(Market market) {
         this.market = market;
@@ -115,10 +104,6 @@ public class CheckTask implements Serializable {
         this.checkReportSet = checkReportSet;
     }
 
-    public void addCheckReport(CheckReport checkReport){
-        this.checkReportSet.add(checkReport);
-    }
-
     public Market getMarket() {
         return market;
     }
@@ -127,7 +112,21 @@ public class CheckTask implements Serializable {
         this.market = market;
     }
 
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     // ------------  功能函数  ----------------
+
+    /**
+     * 获取该监管任务中某段时间内指定产品分类的总不合格数
+     * @return
+     */
     public Set<ProductCategory> getUnfinishedProductCategories(){
         Set<ProductCategory> unfinishedCategories = new HashSet<>(this.superTask.getProductCategorySet());
         for(CheckReport report: this.checkReportSet){
@@ -137,19 +136,33 @@ public class CheckTask implements Serializable {
         return unfinishedCategories;
     }
 
-    public void updateCheckReport(CheckReport checkReport){
-
+    /**
+     * 获取指定产品分类中的不合格数
+     * @param category
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    public int getUnqualifiedCountByCategory(ProductCategory category, Date startDate, Date endDate) {
+        int total = 0;
+        for (CheckReport checkReport : checkReportSet) {
+            if (checkReport.getProductCategory().equals(category)) {
+                Date checkDate = checkReport.getCheckDate();
+                if (checkDate.compareTo(startDate)>=0 && checkDate.compareTo(endDate)<=0) {
+                    total += checkReport.getUnqualifiedCnt();
+                }
+            }
+        }
+        return total;
     }
 
-    public void getTotalUnqualifiedCount(Date date, Date endDate, ProductCategory productCategory){
-
+    /**
+     * 添加抽检报告
+     * @param checkReport
+     */
+    public void addCheckReport(CheckReport checkReport){
+        this.checkReportSet.add(checkReport);
     }
 
-    public String getDescription() {
-        return description;
-    }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
 }

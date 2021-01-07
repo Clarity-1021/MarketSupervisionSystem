@@ -20,16 +20,13 @@ public class SuperTask implements Serializable {
 
     private String description;
 
-//    @Transient
     @Transient //@ManyToOne(optional=true)
     //@JoinColumn(name = "expert_id")
     private Expert expert;
 
-//    @Transient
     @Transient //@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<ProductCategory> productCategorySet = new HashSet<>();
 
-//    @Transient
     @Transient //@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "superTask")
     private List<CheckTask> checkTaskSet = new ArrayList<>();
 

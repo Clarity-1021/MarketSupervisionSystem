@@ -500,13 +500,15 @@ class IndicatorServiceTest {
         indicatorService.checkCategoryByMarket(superTask2, market, fruit, 8, "2020-12-2");
 
         indicatorService.updateScore(market,"2020-12-25");
-        Assertions.assertEquals(-30, market.getTotalScore());
+        Assertions.assertEquals(-40, market.getTotalScore());
 //        System.out.println(market.getScoreRecordList().get(0).getScoreReason());
 //        System.out.println(market.getScoreRecordList().get(1).getScoreReason());
         Assertions.assertEquals("[监管任务1 2020-12-02][-10]：未按时完成",
                 market.getScoreRecordList().get(0).getScoreReason());
-        Assertions.assertEquals("[监管任务2 2020-12-03][-20]：超过20天未完成",
+        Assertions.assertEquals("[监管任务2 2020-12-03][-10]：未按时完成",
                 market.getScoreRecordList().get(1).getScoreReason());
+        Assertions.assertEquals("[监管任务2 2020-12-03][-20]：超过20天未完成",
+                market.getScoreRecordList().get(2).getScoreReason());
 
         SuperTask superTask5 = indicatorService.createSuperTask("监管任务5", marketSet, productCategorySet, "2020-12-9");
         // 打印监管任务信息
@@ -520,13 +522,15 @@ class IndicatorServiceTest {
 //        printCheckReports(superTask1, market);
 
         indicatorService.updateScore(market,"2020-12-25");
-        Assertions.assertEquals(-20, market.getTotalScore());
+        Assertions.assertEquals(-30, market.getTotalScore());
         Assertions.assertEquals("[监管任务1 2020-12-02][-10]：未按时完成",
                 market.getScoreRecordList().get(0).getScoreReason());
         Assertions.assertEquals("[监管任务5 2020-12-09][10]：按时完成",
                 market.getScoreRecordList().get(1).getScoreReason());
-        Assertions.assertEquals("[监管任务2 2020-12-03][-20]：超过20天未完成",
+        Assertions.assertEquals("[监管任务2 2020-12-03][-10]：未按时完成",
                 market.getScoreRecordList().get(2).getScoreReason());
+        Assertions.assertEquals("[监管任务2 2020-12-03][-20]：超过20天未完成",
+                market.getScoreRecordList().get(3).getScoreReason());
 
 //        System.out.println(market1.getScoreRecordList().get(0).getScoreReason());
 //        System.out.println(market1.getScoreRecordList().get(1).getScoreReason());
@@ -582,6 +586,16 @@ class IndicatorServiceTest {
         Assertions.assertEquals("[监管任务4 2020-12-14][-10]：未按时完成",
                 expert.getScoreRecordList().get(2).getScoreReason());
 
+        indicatorService.updateScore(expert,"2021-1-10");
+        Assertions.assertEquals(-30, expert.getTotalScore());
+        Assertions.assertEquals("[监管任务3 2020-12-03][-10]：未按时完成",
+                expert.getScoreRecordList().get(0).getScoreReason());
+        Assertions.assertEquals("[监管任务6 2020-12-08][10]：按时完成",
+                expert.getScoreRecordList().get(1).getScoreReason());
+        Assertions.assertEquals("[监管任务4 2020-12-14][-10]：未按时完成",
+                expert.getScoreRecordList().get(2).getScoreReason());
+        Assertions.assertEquals("[监管任务4 2020-12-14][-20]：超过20天未完成",
+                expert.getScoreRecordList().get(3).getScoreReason());
     }
 
 

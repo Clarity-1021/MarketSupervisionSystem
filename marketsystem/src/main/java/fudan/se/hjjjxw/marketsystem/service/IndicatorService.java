@@ -141,16 +141,12 @@ public class IndicatorService {
 
         // 未完成抽检
         for (CheckTask checkTask : unfinished) {
-            ScoreRecord sr;
             if (today.compareTo(checkTask.getSuperTask().getDeadLine()) > 0) {
+                iCheck.addScoreRecord(new ScoreRecord(checkTask.getSuperTask(), -10, NOT_FINISH_ON_TIME));
                 // 20天内未完成
-                if (differentDays(checkTask.getSuperTask().getDeadLine(), today) <= 20) {
-                    sr = new ScoreRecord(checkTask.getSuperTask(), -10, NOT_FINISH_ON_TIME);
+                if (differentDays(checkTask.getSuperTask().getDeadLine(), today) > 20) {// 超过20天未完成
+                    iCheck.addScoreRecord(new ScoreRecord(checkTask.getSuperTask(), -20, NOT_FINISH_OVER_20_DAIES));
                 }
-                else {// 超过20天未完成
-                    sr = new ScoreRecord(checkTask.getSuperTask(), -20, NOT_FINISH_OVER_20_DAIES);
-                }
-                iCheck.addScoreRecord(sr);
             }
         }
     }
